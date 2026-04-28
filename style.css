@@ -425,3 +425,19 @@ body::after {
 
 .replay-btn { background: #fff; color: #0284c7; border: 2px solid #0284c7; padding: 16px 40px; font-size: 1.1rem; font-weight: 700; border-radius: 30px; cursor: pointer; transition: transform 0.2s, background 0.2s; margin-top: 40px; }
 .replay-btn:hover { background: #0284c7; color: #fff; transform: translateY(-2px); }
+
+/* 📊 互動式圖表容器樣式 */
+.news-chart {
+    margin: 3rem 0;
+    width: 100%;
+    background: #fff;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+}
+@media (max-width: 768px) {
+    .news-chart {
+        padding: 10px;
+        margin: 2rem 0;
+    }
+}
