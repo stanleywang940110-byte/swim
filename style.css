@@ -428,16 +428,55 @@ body::after {
 
 /* 📊 互動式圖表容器樣式 */
 .news-chart {
-    margin: 3rem 0;
+    margin: 2rem auto;
     width: 100%;
+    max-width: 1000px; /* 增加寬度限制，提升閱讀舒適度同時保持美感 */
     background: #fff;
-    padding: 20px;
-    border-radius: 12px;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+    padding: 24px;
+    border-radius: 16px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.08); /* 稍微增加陰影厚度 */
 }
 @media (max-width: 768px) {
     .news-chart {
-        padding: 10px;
-        margin: 2rem 0;
+        padding: 12px;
+        margin: 1rem auto;
     }
+}
+
+.scroll-hint {
+    font-size: 0.9rem; /* 稍微放大一點 */
+    color: #64748b;
+    text-align: right;
+    margin-top: 1.5rem;
+    padding-right: 24px;
+    font-style: italic;
+    animation: bounceDown 2s infinite;
+}
+
+@keyframes bounceDown {
+    0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+    40% { transform: translateY(-8px); }
+    60% { transform: translateY(-5px); }
+}
+
+.chart-interaction-section {
+    background: linear-gradient(to bottom, #f0f9ff, #ffffff);
+    min-height: 95vh; /* 強制增加高度到接近全螢幕，防止看到下方文字 */
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* 讓圖表垂直居中 */
+    align-items: flex-end;
+    padding: 10vh 0; 
+}
+
+.chart-interaction-section .news-chart {
+    align-self: center;
+}
+
+.news-section.tight-spacing {
+    padding-bottom: 2vh; /* 大幅縮減下方間距 */
+}
+
+.news-section.tight-spacing + .news-section {
+    padding-top: 2vh; /* 同時縮減下一個標題區塊的上間距 */
 }
