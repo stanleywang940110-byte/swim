@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>沉浸式專題：海流中的救援</title>
+    <!-- 引入高質感的 Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;500;700;900&family=Noto+Serif+TC:wght@600&family=Playfair+Display:ital,wght@1,600&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <div id="game-layer" class="game-layer">
+        <div class="ocean-background"></div>
+        <div id="start-ui" class="start-ui">
+            <div class="ui-content">
+                <h1 class="start-title">危急時刻</h1>
+                <p class="start-desc">有人溺水，即刻前往救援！<br>點擊以抵抗水流。</p>
+                <button id="start-btn" class="start-btn">開始救援</button>
+            </div>
+        </div>
+        <div id="game-ui" class="game-ui hide">
+            <div class="ui-content">
+                <h2 class="game-title">與海流搏鬥</h2>
+                <p class="game-instruction">快速點擊游向目標！留意漂流的救生圈。</p>
+                <div class="progress-container">
+                    <div id="progress-bar-wrap" class="progress-bar-wrap">
+                        <div id="progress-bar" class="progress-bar"></div>
+                    </div>
+                    <div class="progress-text"><span id="distance-text">0</span> / 100 <span>m</span></div>
+                </div>
+                <div style="text-align: right;">
+                    <button id="skip-btn" class="skip-btn">直接閱讀專題 ➡</button>
+                </div>
+            </div>
+        </div>
+        <div id="surge-warning" class="surge-warning hide">
+            <h2>⚠️ 浪潮加劇</h2>
+        </div>
+        <div id="beach-layer" class="beach-layer"></div>
+        <div id="swimmer" class="swimmer intro-standby">
+            <svg viewBox="0 0 200 240" class="lifeguard-silhouette">
+                <path d="M 100 150 Q 125 170 155 195" fill="none" stroke="#64748b" stroke-width="2" stroke-dasharray="3 3" />
+                <g transform="translate(155, 195) rotate(-20)">
+                    <rect x="-8" y="0" width="16" height="40" rx="8" fill="#ea580c" />
+                    <rect x="-8" y="8" width="16" height="6" fill="#fff" opacity="0.9" />
+                    <rect x="-8" y="26" width="16" height="4" fill="#fff" opacity="0.9" />
+                </g>
+                <g class="swim-leg-left" transform-origin="90 150">
+                    <path d="M 85 145 C 75 165, 78 200, 82 220 C 85 225, 92 225, 95 220 C 98 200, 95 165, 95 145 Z" fill="#e2a87a" />
+                </g>
+                <g class="swim-leg-right" transform-origin="110 150">
+                    <path d="M 115 145 C 125 165, 122 200, 118 220 C 115 225, 108 225, 105 220 C 102 200, 105 165, 105 145 Z" fill="#e2a87a" />
+                </g>
+                <g class="swim-arm-left" transform-origin="75 65">
+                    <path d="M 75 65 Q 40 60 30 25" fill="none" stroke="#e2a87a" stroke-width="15" stroke-linecap="round" />
+                </g>
+                <g class="swim-arm-right" transform-origin="125 65">
+                    <path d="M 125 65 Q 160 85 155 130" fill="none" stroke="#e2a87a" stroke-width="15" stroke-linecap="round" />
+                </g>
+                <g fill="#e2a87a">
+                    <ellipse cx="100" cy="32" rx="14" ry="16" />
+                    <ellipse cx="100" cy="29" rx="13.5" ry="14" fill="#09090b" />
+                    <path d="M 90 45 Q 100 42 110 45 C 130 45, 142 55, 138 75 C 135 95, 122 120, 115 135 L 85 135 C 78 120, 65 95, 62 75 C 58 55, 70 45, 90 45 Z" />
+                    <path d="M 100 48 L 100 130 M 78 65 C 88 80, 93 105, 94 125 M 122 65 C 112 80, 107 105, 106 125" stroke="#c08253" stroke-width="2.5" stroke-linecap="round" fill="none" opacity="0.6" />
+                </g>
+                <path d="M 85 135 L 115 135 Q 118 148 112 154 Q 105 160 100 160 Q 95 160 88 154 Q 82 148 85 135 Z" fill="#dc2626" />
+            </svg>
+            <div class="water-wake"></div>
+        </div>
+        <div id="lifesavers-container"></div>
+        <div id="click-effects"></div>
+        <div id="dive-splash-container"></div>
+    </div>
+
+    <div id="game-layer-2" class="game-layer-2 hide">
+        <div class="ocean-2" id="svg-ocean-2">
+            <svg viewBox="0 0 1440 320" preserveAspectRatio="none">
+                <path class="wave-2 wave1-2" d="M0,160 C240,220 480,100 720,160 C960,220 1200,100 1440,160 L1440,320 L0,320 Z"></path>
+                <path class="wave-2 wave2-2" d="M0,180 C240,260 480,120 720,180 C960,240 1200,120 1440,180 L1440,320 L0,320 Z"></path>
+                <path class="wave-2 wave3-2" d="M0,200 C240,280 480,140 720,200 C960,260 1200,140 1440,200 L1440,320 L0,320 Z"></path>
+            </svg>
+        </div>
+        <canvas id="canvas-2"></canvas>
+        <div id="app-container-2">
+            <div id="screen-start-2" class="screen-2 active">
+                <div class="eng-title-2">RESCUE SYSTEM TOUCHSTONE</div>
+                <h1>如果海浪打來：救生體制大考驗</h1>
+                <div class="subtitle-2">台灣的救生員考照標準，出了什麼問題？<br>兩段實機測試，解鎖本國與國際在體系上的落差。</div>
+                <div class="cover-panel-2">
+                    <div class="phase-item-2"><div class="phase-badge-2 badge-p1-2">Phase 1</div><span>台灣/國際證照知多少 (挑戰限時調度)</span></div>
+                    <div class="phase-item-2"><div class="phase-badge-2 badge-p2-2">Phase 2</div><span>極限水域模擬器 (物理海象連動)</span></div>
+                </div>
+                <button class="action-btn-2 start-btn-2" onclick="goToGame2('lvl1')">立刻啟動挑戰</button>
+            </div>
+            <div id="screen-lvl1-2" class="screen-2">
+                <h1 style="font-size:26px;">第一階段：證照知識對抗</h1>
+                <div class="subtitle-2" style="margin-bottom:8px;">時間緊迫！在時限內正確指派人員。</div>
+                <div class="timer-container-2"><div id="timer-bar-2"></div></div>
+                <div class="dispenser-area-2"><div id="sort-card-2" class="sort-card-2">載入中...</div></div>
+                <div class="sorting-bins-2">
+                    <button class="bin-btn-2 btn-tw-2" onclick="sortToGame2('tw')">台灣體制檢定<br><span style="font-size:12px;opacity:0.7;">👇 歸向台灣</span></button>
+                    <button class="bin-btn-2 btn-au-2" onclick="sortToGame2('au')">澳洲 SLSA 與加拿大<br><span style="font-size:12px;opacity:0.7;">👇 歸向國際</span></button>
+                </div>
+                <div class="sorted-results-2">
+                    <div class="result-box-2"><div class="res-title-2">🇹🇼 台灣訓練</div><div id="box-tw-2"></div></div>
+                    <div class="result-box-2"><div class="res-title-2">🇦🇺 🇨🇦 澳洲SLSA與加拿大訓練</div><div id="box-au-2"></div></div>
+                </div>
+                <button id="lvl1-next-btn-2" class="action-btn-2" style="display:none;" onclick="goToGame2('lvl1-end')">任務完成！結算報告</button>
+            </div>
+            <div id="screen-lvl1-end-2" class="screen-2">
+                <div class="eng-title-2">SYSTEM IMBALANCE</div>
+                <h1 style="font-size:26px;">不對等的訓練制度</h1>
+                <div class="conclusion-panel-2">
+                    <p>台灣救生防線滿是<b>「靜水泳池、假人拖拉、單人短跑式測驗」</b>等不符真實海象的訓練。</p>
+                    <p>而澳洲與加拿大等國際標準，則配備了<b>「動力載具、水母處置、團隊作戰」</b>等實戰內容。</p>
+                    <p class="highlight-conclusion-2">當裝備與制度訓練嚴重缺失，救生員在開放水域將面臨極大風險。</p>
+                </div>
+                <button class="action-btn-2" onclick="goToGame2('lvl2')">啟動下個階段：體能極限</button>
+            </div>
+            <div id="screen-lvl2-2" class="screen-2">
+                <div class="eng-title-2">ENVIRONMENT SIMULATOR</div>
+                <h1 style="font-size:22px;">第二階段：極限水域模擬器</h1>
+                <div class="subtitle-2">請<b>左右拖拉滑桿</b>惡化環境，觀察雙方反應極限。</div>
+                <div class="slider-container-2">
+                    <div class="slider-header-2"><span>平靜溫和</span><span>浪湧/掙扎</span><span>絕望深海</span></div>
+                    <input type="range" id="threat-slider-2" min="1" max="100" value="1" oninput="updateThreatLevelGame2(this.value)">
+                    <div class="threat-display-2"><h2 id="env-title-2">載入中...</h2><div class="threat-tag-2" id="env-tag-2">標籤</div></div>
+                </div>
+                <div class="comp-grid-2">
+                    <div class="c-card-2" id="tw-card-2"><h3 class="tw-title-2">🇹🇼 台灣能力極限</h3><div class="status-text-2" id="tw-status-2"></div><ul id="tw-skills-2"></ul></div>
+                    <div class="c-card-2" id="de-card-2"><h3 id="de-title-2">🇩🇪 德國分級評鑑</h3><div class="status-text-2" id="de-status-2"></div><ul id="de-skills-2"></ul></div>
+                </div>
+                <button class="action-btn-2" onclick="goToGame2('lvl2-end')">終止模疑：產出總結</button>
+            </div>
+            <div id="screen-lvl2-end-2" class="screen-2">
+                <div class="eng-title-2">FORGOTTON FRONTLINE</div>
+                <h1>失靈的安全網</h1>
+                <div class="conclusion-panel-2">
+                    <p>法規用一套<b>「泳池靜水標準」</b>核發證照。一旦下海，他們面對的是<b>「真實活體與離岸流」</b>。</p>
+                    <p class="highlight-conclusion-2">缺乏如德國般「漸進分級」，也沒有澳洲完整的培訓制度。我們缺的不是熱血，而是一條法規生路。</p>
+                </div>
+                <button class="action-btn-2" onclick="closeGame2()">完成挑戰：返回報導</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="news-layer" class="news-layer hide">
+        <header class="news-header">
+            <div class="header-overlay"></div>
+        </header>
+
+        <main class="news-content">
+            <section class="news-section intro-section">
+                <p class="reporter">【記者王翊丞、呂詠倢、林家慶、熊子萱報導】</p>
+                <p>「其實我們當班人員配置應該要平日二到三位，假日要四位，但我們人手不足，所以會比較辛苦。」烏石港海灘救生員廖家君說。隨著氣溫節節攀升，戲水旺季即將到來不少人選擇到溪邊浸泡在沁涼的水裡消暑，或是抓起浪板直奔海邊衝浪。從泳池、溪流到海邊，迴盪著民眾的嘻笑喧鬧，現場卻不見救生員身影，抑或廣大場域僅有兩三位救生員看顧。默默守護這些笑容的救生員面臨嚴重缺工，敲響了水域安全的警鐘。</p>
+            </section>
+
+            <section class="news-section">
+                <h2>救生員考照制度現況</h2>
+                <p>救生員考證制度原本是由政府認定之訓練機構自行訓練並發證，且僅以監督形式介入。但在2019年修訂《救生員資格檢定辦法》後，體育署（現運動部）改推動公辦檢定及兩證合一制度。「訓練與檢定合一」意即由政府統籌救生員考試與證照發放，以提升檢定品質，持有運動部救生員證書方可在臺灣從事救生工作；而「兩證合一」制度則是將游泳池和開放水域救生員證書合併，擁有證書即代表救生基礎能力通過核可。</p>
+                <p>然而，新制實施初期卻過於嚴格。中華民國水上救生協會考試官兼國際組長許金德指出，「考試的考官抓得很嚴格，一點點的小動作錯誤就會被扣分，其實跟真正救人無關。」台灣游泳池協會理事長范清樂也持相似看法，他舉例現今泳池環境已不同以往，多數場館水深僅約150公分，池長以25公尺或50公尺為主，與早期深水、長距離的救援場景存在明顯差異，「對角處有人溺水時，考官卻還要求應試者不能直接跑過去，要用游的，是違背直覺的做法。」他也補充如長背板救援項目屬團隊協作項目，需四個人齊心協力配合完成，「但大家互不熟識、缺乏默契，很難一次成功。」而該項目只要任一環節未達標準，便會一次扣除32分，幾乎等同直接宣判檢定不合格，長此以往，考生平均通過率僅有四成。</p>
+                <p>現行救生員證書效期為四年，因此救生員需於期滿前再次參與共16小時以上的複訓才可展延證書，更須參與安全講習活動以取得證明。對此，台灣游泳池事業協會秘書長劉家豪指出，「會去考的都是四五十歲的救生菁英，但複訓制度耗時耗成本，反而阻礙他們的續職意願。」他補充說明，現行制度留不住具備長期實務經驗的資深救生員，變相使救生員產業多由短期打工兼職的學生或臨時人力填補，不僅增加人員流動率，也使第一線救援經驗難以累積與傳承。</p>
+                <section class="news-section chart-interaction-section">
+                    <div class="news-chart">
+                        <div class="flourish-embed flourish-draw" data-src="visualisation/28728743">
+                            <script src="https://public.flourish.studio/resources/embed.js"></script>
+                        </div>
+                    </div>
+                    <p class="scroll-hint">繼續向下閱讀報導 ↓</p>
+                </section>
+
+                <section class="news-section">
+                    <p style="margin-top: 100px;">根據監察院2024年公布的調查報告，顯示救生員檢定自公辦化後，相關檢定預算大幅攀升；然而，合格人數卻呈現明顯下滑。在2018年以前，我國合格救生員人數每年約三千至四千人；自2019年修法後，每年僅剩下不到一千人合格。合格人數的斷崖式下跌，反映出救生員培育量能明顯萎縮，也使全國各地游泳池及開放水域面臨救生人力嚴重短缺的困境，第一線水域安全維護壓力隨之升高。</p>
+                    <h2>政府單位未有開放水域相關培訓</h2>
+                    <p>現行檢定內容以游泳池環境為主，測驗內容分為體能需求和基礎急救能力：前者如應試者需在六分鐘內完成200公尺的救生四式（註），後者則包含拖帶假人、長背板救援與拋繩救援等技巧實測。乍看之下面面俱到，但劉家豪坦言，「我能確定目前臺灣訓練出來的救生員，沒有辦法直接在開放水域執業。」他進一步舉例，若救生員想在海水浴場等開放水域執業，還必須接受額外訓練如長距離體能耐力、操作救援無人機以及駕駛橡皮艇等專業技能，「這些項目要怎麼在泳池考？不可能啊！」中華民國運動訓練協會廖國盛教練，也說明過往開放水域專項救生檢定與現行檢定制度的極大差異，「以前我們是要背著魚雷浮標跑到海裡，在海中穿蛙鞋，再游出去兩、三百公尺救人，把溺者固定在浮標後再拉回岸邊。」相較之下，現行以泳池為核心的檢定制度，雖能建立基礎救援能力，卻難以涵蓋海流、浪況、裝備操作與長距離救援等開放水域的真實情境，形成訓練內容與執業現場之間的明顯落差。</p>
+                    <p class="note">註：指抬頭捷、抬頭蛙、側泳、基本仰泳。</p>
+                </section>
+
+                <section class="news-section cta-section">
+                    <div class="cta-container">
+                        <div class="cta-badge">LIFEGUARD CHALLENGE</div>
+                        <h2>各國救生體制大考驗</h2>
+                        <p>台灣的救生員考照標準，出了什麼問題？<br>點擊啟動挑戰，親自體驗體制上的差異</p>
+                        <button class="cta-start-btn" onclick="openGame2()">啟動挑戰</button>
+                    </div>
+                </section>
+
+                <section class="news-section">
+                    <p style="text-align: right; font-size: 0.9rem; color: #64748b; margin-top: -20px; margin-bottom: 40px; opacity: 0.8;">資料來源：中華海浪救生總會、德國救生總會官網</p>
+                    <p>因現行考照制度對開放水域救援技巧的要求相對不足，許多民間機構隨之調整訓練內容。許金德點出有些民間訓練班的設立只為因應檢定，「（協會）隨便上課而且時數都很短，就只針對考試的項目上，不會上得很完整。」中華民國水適能訓練協會理事長江柏億也補充，當檢定考試不採納開放水域，以通過考試為主的學員自然也不會想花錢進行開放水域培訓，「訓練是制度需要，但當你這個（開放水域）的證照供應都沒有，我怎麼可能會有額外培訓的需求？」</p>
+                    <p>除了民間訓練內容的減少與更動外，訓練品質更存在良莠不齊的疑慮。國立政治大學游泳館救生員王筱渝分享，「我有聽過考生反應：『可是我協會的老師不是這樣教我的』，但官方教學影片就是很明顯放在那邊了。 」而曾擔任過公辦檢定甄審人員的林智明，一看考生的動作就能分辨其出自哪個協會，「很多協會教的不是體育署考試的動作，他們還會融合一些自己覺得對的動作。」他認為真正需要改革的是訓練班的教學方式，統一且標準的訓練才能提升考生的游泳和救生能力。</p>
+
+                    <p>檢定內容中對開放水域訓練的不足，實際上將培訓責任間接轉嫁到開放水域業者身上。范清樂說明，開放水域多具有獨特條件，每地的潮汐、海流、風浪強度與地形結構都會影響救援方式，「像秀姑巒溪的激流，就需要去學橡皮艇操作方法，要因地制宜。」他補充，每地條件不同，所需專業訓練也不同，政府端難在標準化制度下發展出適宜各地水域特性的培訓內容，因此由業者自行安排增能課程，才是正確之道。然而，政府對業者後續應實施的人力訓練卻未建立完整監管措施，中華民國運動訓練協會理事長林智明點出箇中原因，「開放水域的管理機關是交通部，它不會去管這類運動的東西。」救生員培訓與開放水域管理各自為政，雙軌分治下導致現場救生實務僅能倚靠業者自行把關。</p>
+
+                    <p>以第一線救生人員的角度出發，曾擔任海邊救生員三年的蕉哥（化名）認為，「（要去當開放水域救生員的人，）他本身是否有常態性在開放水域玩水，這件事情很重要。」若救生員有衝浪、溯溪與潛水等遊玩經驗，對於遊客常見的意外狀況會相對熟悉，也進而能擁有救援技能的基本背景知識。烏石港衝浪店業者Benny（化名）分享過去招募救生員的經驗，「我之前請有證照不會衝浪的救生員，他們會自豪自己有證照，可是實際出動救援時，他還被其他衝浪的人救上來。」救生員若沒有開放水域相關經驗，不僅增加民眾從事水域活動的安全風險，更會讓救生員陷於危險職場中。</p>
+                </section>
+
+                <section class="news-section">
+                    <h2>開放水域缺工的因素與所致問題</h2>
+                    <p>談及救生員缺工主因，薪資水準是一大關鍵。目前兼職救生員的時薪落在200至250元，月薪超過四萬的更是少之又少，部分水域還會有淡旺季之分，讓救生員的工作生態也因此越趨季節性，除影響留任意願，也進一步導致臺灣難以如法炮製國外常見的救生員檢定分級制度（註），劉家豪無奈地說，「臺灣連考出一張證照都有問題，更何況是不同級數的好幾張？」在臺灣的救生員產業結構內也缺乏升遷管道，蕉哥提出他的觀察，「因為救生員再往上做，你可能只能做救生主管，並沒有太往上的發展空間。」因此許多救生員選擇跨足教學領域，或是直接轉職當游泳教練，也讓救生員的需求產生缺口。</p>
+                    <p class="note">註：以德國救生員培訓制度為例，依照筆試與檢定難度，分級劃分為銅質、銀質、金質救生徽章。對照德國救生員認證分級制度，國內的認證著重游泳能力，而非救生技能。</p>
+                    <p>「因為這個行業，大家的既定印象就是你沒事坐在那邊，我幹嘛花那麼多錢請你？比較把救生員看成是保全吧。」國立政治大學游泳館管理員芳姐（化名），道出社會大眾對救生員的觀感。蕉哥投入此行業多年，也分享身邊親友的看法，「他們會覺得你在這邊曬太陽、看風景、看很多人在玩水，很愜意的樣子。」在這樣的社會觀感基礎上，江柏億認為目前新聞媒體多為負面報導，導致救生員懷抱救人理想的初衷逐漸被消磨。「大家會有英雄夢，覺得救援很帥，覺得我有社會責任當這個角色，但其實這塊一直沒有被重視。」顯示救生員與同樣擔起救生責任的消防、醫護人員相比，普遍不被認為是「英雄」。</p>
+
+                    <p>「如果你的薪水跟一般服務業相比差不多，但人家不用背法律責任，那我為什麼要做一個有法律風險的工作？」蕉哥認為救生員肩上背負的責任是讓很多人卻步的主因。投入救援時，除了自己的人身安全外，若是沒成功救溺，更會面臨延伸的官司。他分享，「每個個案實際的法律責任不太一樣，但不管如何，救生員的賠償金額可能都是七位數起跳。」在低廉的薪資面前，賠償金就如同天文數字，讓救生工作不僅是體力與技術的考驗，更需承擔極高的心理壓力。</p>
+                    <p>多重因素交織下，開放水域救生員缺工問題日益嚴重。林智明觀察指出，目前開放水域救生員出現明顯的人力斷層，逐漸浮現年齡結構失衡的現象，「老一輩知道要怎麼拉風浪流的警戒線，但沒有年輕人可以傳承。」雪上加霜的是救生員需定期展延證照的制度，不斷降低實務工作者的續職意願，讓整體人力更加吃緊。當缺工問題反映在現狀上，劉家豪點出，「結果就是很多地方連只有協會證照的救生員都拿來用。」</p>
+                </section>
+
+                <section class="news-section">
+                    <h2>未來展望</h2>
+                    <p>「通過率降低其實也有好處，現在很多地方的時薪已經開到250元以上了。」林智明苦笑地說。但據他觀察，儘管某些場域的時薪甚至達到300元的水平，卻還是找不到人，他認為最有效的誘誘因仍在金錢，「只要錢到位了，一切問題都能迎刃而解。」</p>
+                    <p>不只薪資層面的不足，劉家豪點出，救生員一旦踏入場館值班，即具備法律上的「保證人地位」（註），他主張救生員若在救援過程中已施以標準救援程序，就不應使其獨自承擔涉訟風險，他說：「可以跟醫護人員一樣有合理免責的機制，或是政府替我們啟動專屬的保險制度。」他也補充，將AI工具結合現有設備可讓救生員不必承擔第一線風險，如室內水域可使用監視系統，開放水域則可安排無人機裝備去定位追蹤，「事先設定好系統去評估、分析與追蹤游泳者的動作，當有超過指標的動作出現時，救生員就能馬上被通知。」如此一來，便有可能降低求職者對於安全的疑慮，減緩缺工問題。</p>
+                    <p class="note">註：指法律上因特定職務或身分，而負有防止他人生命、身體法益受侵害之義務；若未履行該義務而導致損害發生，可能需負刑事責任。</p>
+                </section>
+
+                <section class="news-section">
+                    <p>除了法律的改制，蕉哥也提出可以從教育著手，他認為學習游泳是臺灣孩子們的常態，但教學和實務上仍存在落差，因此他創立「像一條魚LikeAFish」品牌，以自身經驗推廣防溺教育。蕉哥指出，「就是因為學校沒有做或者做得不夠，才需要我們。」由於現有的國中、小教育正在推動游泳教學，江柏億建議將救生員培訓的內容融入，「讓孩子從小就具備基礎的救生能力，而不是趨近於零。」他希望能讓自救與水域安全被普遍重視，不但能減輕救生員的負擔，更能降低溺水事故的發生率。</p>
+                    <p>「不是說要在救生這方面賺到多少錢，我只是想不要再讓這麼多年輕人因為不懂自救，無辜浪費生命。」廖國盛娓娓道來他的從業理念。然而，救生員不該只是單純仰賴個人使命感支撐的行業，江柏億說到，「（政府與民間）應該提高待遇留人，再改善環境穩人，再建立制度育人，最後透過正面形象擴大招募。」救生員肩負了生命的重量，而國家也需要撐起救生員願意在險峻水域中投入生命的理由。</p>
+        </main>
+
+        <footer class="news-footer" style="padding-bottom: 80px; text-align: center;">
+            <button id="replay-btn" class="replay-btn">← 返回開頭，再次體驗救援</button>
+        </footer>
+    </div>
+
+    <div id="wave-transition" class="wave-transition"></div>
+    <script src="script.js"></script>
+</body>
+
+</html>
