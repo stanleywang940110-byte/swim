@@ -414,7 +414,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const severityData2 = [
         {
             envTitle: "深 150cm 平靜泳池", envTag: "安全可控 / 封閉環境",
-            tw: { state: "state-safe", status: "正式上崗游刃有餘", color: "#4ade80", skills: ["台灣唯一核發證照", "熟悉單人CPR與長背板", "200m 限時完賽", "專考 25m 單人假人拖拉"] },
+            tw: { state: "state-safe", status: "正式就職尚能應對", color: "#4ade80", skills: ["台灣唯一核發證照", "熟悉單人CPR與長背板", "200m 限時完賽", "專考 25m 單人假人拖拉"] },
             de: { state: "state-safe", badge: "badge-bronze", title: "🇩🇪 德國銅級徽章", status: "能力達標 (無法定執業)", color: "#cd7f32", skills: ["純屬個人自救協助", "掌握基礎單人 CPR", "200m 徒手(限時10分)", "著重仰泳與入水打撈"] }
         },
         {
